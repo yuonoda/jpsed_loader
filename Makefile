@@ -5,4 +5,10 @@ down:
 	docker-compose down
 
 migrate:
-	python migrate.py
+	python answer.py
+
+reset:
+	make down && make up && make migrate
+
+load:
+	python load.py

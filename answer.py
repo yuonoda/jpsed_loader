@@ -1,5 +1,5 @@
 import sys
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer,BigInteger, String
 from setting import Base, Engine
 
 class Answer(Base):
@@ -8,9 +8,9 @@ class Answer(Base):
         'comment': '回答のファクトテーブル'
     }
     SurveyNumber = Column('survey_number', Integer, primary_key=True)
-    AnswerKey = Column('answer_key', String(25), primary_key=True,)
+    AnswerKey = Column('answer_key', Integer, primary_key=True,)
 
-    UserID = Column('user_id', Integer)
+    UserID = Column('user_id', BigInteger)
     Age = Column('age', Integer)
 
 
