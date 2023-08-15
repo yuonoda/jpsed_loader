@@ -24,7 +24,10 @@ with open(csvPath, 'r') as file:
             "SurveyNumber": SurveyNumber,
             "AnswerKey": row['key'],
             "UserID": row['pkey'],
-            "Age": row['y22_q2']
+            "Age": row['y22_q2'],
+            "Gender": row['y22_q1'],
+            "EducationalAttainment":row['y22_q5'],
+            "MainJobIncome":  row['y22_q100_1'] if row['y22_q100_1'] != '' else 0,
         })
 
         # 1000件ごとにバルクインサート

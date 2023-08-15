@@ -12,7 +12,9 @@ class Answer(Base):
 
     UserID = Column('user_id', BigInteger)
     Age = Column('age', Integer)
-
+    Gender = Column('gender', Integer)
+    EducationalAttainment = Column('educational_attainment', Integer)
+    MainJobIncome = Column('main_job_income', Integer)
 
 def main(args):
     """
