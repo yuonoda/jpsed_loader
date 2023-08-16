@@ -6,6 +6,15 @@ from dotenv import load_dotenv
 
 
 class Loader:
+    KEY_DICT_BY_SURVEY = {
+        1523: {
+            "Age": "y22_q2",
+            "Gender": "y22_q1",
+            "EducationalAttainment": "y22_q5",
+            "MainJobIncome": "y22_q100_1"
+        },
+    }
+
     def __init__(self):
         load_dotenv()
         self.csvPath = os.getenv("CSV_PATH")
@@ -13,6 +22,9 @@ class Loader:
     def load(self, survey_number: int) -> None:
         # 対象のレコードを事前に削除
         session.query(Answer).filter(Answer.SurveyNumber == survey_number).delete(synchronize_session='fetch')
+
+        # キーの辞書を取得
+        key_dict = self.KEY_DICT_BY_SURVEY[survey_number]
 
         # CSVを読み込み
         data = []
@@ -25,10 +37,10 @@ class Loader:
                     "SurveyNumber": survey_number,
                     "AnswerKey": row['key'],
                     "UserID": row['pkey'],
-                    "Age": row['y22_q2'],
-                    "Gender": row['y22_q1'],
-                    "EducationalAttainment": row['y22_q5'],
-                    "MainJobIncome": row['y22_q100_1'] if row['y22_q100_1'] != '' else 0,
+                    "Age": row[key_dict['Age']],
+                    "Gender": row[key_dict['Gender']],
+                    "EducationalAttainment": row[key_dict['EducationalAttainment']],
+                    "MainJobIncome": row[key_dict["MainJobIncome"]] if row[key_dict['MainJobIncome']] != '' else 0,
                 })
 
                 # 1000件ごとにバルクインサート
