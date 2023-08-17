@@ -5,7 +5,7 @@ down:
 	docker-compose down
 
 migrate:
-	python answer.py
+	python migrate.py
 
 reset:
 	make down && make up
