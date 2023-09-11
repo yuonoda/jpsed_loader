@@ -34,6 +34,9 @@ class Answer(Base):
     self_learning = Column('self_learning', Boolean)
     place_of_residence = Column('place_of_residence', Integer,
                                 ForeignKey('place_of_residences_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
+    has_spouse = Column('has_spouse', Boolean, comment='配偶者の有無')
+    has_children = Column('has_children', Boolean, comment='子供の有無')
+    children_count = Column('children_count', Integer, comment='子ども人数【ベース：子どもあり】')
 
 class Occupation(Base):
     __tablename__ = 'occupations_dim'
