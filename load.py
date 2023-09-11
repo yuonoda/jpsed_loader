@@ -19,6 +19,7 @@ class Loader:
             "has_spouse": "y21_q9",
             "has_children": "y21_q10",
             "children_count": "y21_q11",
+            "major": "y21_q6",
         },
         1523: {
             "age": "y22_q2",
@@ -32,6 +33,7 @@ class Loader:
             "has_spouse": "y22_q9",
             "has_children": "y22_q10",
             "children_count": "y22_q11",
+            "major": "y22_q6",
         },
     }
 
@@ -75,6 +77,7 @@ class Loader:
                     "has_spouse": row[key_dict['has_spouse']] == '1',
                     "has_children": row[key_dict['has_children']] == '1',
                     "children_count": row[key_dict['children_count']] if row[key_dict['children_count']] != '' else None,
+                    "major": row[key_dict['major']] if row[key_dict['major']] != '' else None,
                 })
 
                 # 1000件ごとにバルクインサート

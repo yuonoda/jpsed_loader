@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 
 from setting import Base, Engine, session
 
+
 class Survey(Base):
     __tablename__ = 'surveys_dim'
     __table_args__ = {
@@ -12,6 +13,7 @@ class Survey(Base):
     }
     survey_number = Column('survey_number', Integer, primary_key=True)
     year = Column('year', Integer)
+
 
 class Answer(Base):
     __tablename__ = 'answers_fact'
@@ -25,7 +27,8 @@ class Answer(Base):
     age = Column('age', Integer)
     gender = Column('gender', Integer)
     educational_attainment = Column('educational_attainment', Integer,
-                        ForeignKey('educational_attainments_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
+                                    ForeignKey('educational_attainments_dim.key', onupdate='CASCADE',
+                                               ondelete='CASCADE'))
     main_job_income = Column('main_job_income', Integer)
     occupation = Column('occupation', Integer,
                         ForeignKey('occupations_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
@@ -37,6 +40,9 @@ class Answer(Base):
     has_spouse = Column('has_spouse', Boolean, comment='配偶者の有無')
     has_children = Column('has_children', Boolean, comment='子供の有無')
     children_count = Column('children_count', Integer, comment='子ども人数【ベース：子どもあり】')
+    major = Column('major', Integer,
+                        ForeignKey('majors_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
+
 
 class Occupation(Base):
     __tablename__ = 'occupations_dim'
@@ -80,6 +86,7 @@ class Degree(Base):
 
     answers = relationship('Answer', backref='degrees_dim')
 
+
 class PlaceOfResidence(Base):
     __tablename__ = 'place_of_residences_dim'
     __table_args__ = {
@@ -87,6 +94,16 @@ class PlaceOfResidence(Base):
     }
     key = Column('key', Integer, primary_key=True, autoincrement=True)
     name = Column('name', String, nullable=False)
+
+
+class Major(Base):
+    __tablename__ = 'majors_dim'
+    __table_args__ = {
+        'comment': '学部の次元テーブル'
+    }
+    key = Column('key', Integer, primary_key=True, autoincrement=True)
+    name = Column('name', String, nullable=False)
+
 
 def main(args):
     """
@@ -108,7 +125,7 @@ def main(args):
     session.commit()
 
     # 職種マスタを追加
-    occupations =[
+    occupations = [
         {"key": 1, "title": "家政婦（夫）、ホームヘルパーなど"},
         {"key": 2, "title": "理容師"},
         {"key": 3, "title": "美容師"},
@@ -373,71 +390,88 @@ def main(args):
 
     # 学位のマスタデータを追加
     degrees = [
-        {"key":1, "area": "人文科学"},
-        {"key":2, "area": "社会科学"},
-        {"key":3, "area": "自然科学"},
-        {"key":4, "area": "医学、薬学"},
-        {"key":5, "area": "建築"},
-        {"key":6, "area": "芸術"},
-        {"key":7, "area": "福祉"},
-        {"key":8, "area": "その他"},
+        {"key": 1, "area": "人文科学"},
+        {"key": 2, "area": "社会科学"},
+        {"key": 3, "area": "自然科学"},
+        {"key": 4, "area": "医学、薬学"},
+        {"key": 5, "area": "建築"},
+        {"key": 6, "area": "芸術"},
+        {"key": 7, "area": "福祉"},
+        {"key": 8, "area": "その他"},
     ]
     session.bulk_insert_mappings(Degree, degrees)
     session.commit()
 
     # 居住地のマスタデータを追加
     place_of_residences = [
-        {"key":1, "name":"北海道"},
-        {"key":2, "name":"青森県"},
-        {"key":3, "name":"岩手県"},
-        {"key":4, "name":"宮城県"},
-        {"key":5, "name":"秋田県"},
-        {"key":6, "name":"山形県"},
-        {"key":7, "name":"福島県"},
-        {"key":8, "name":"茨城県"},
-        {"key":9, "name":"栃木県"},
-        {"key":10, "name":"群馬県"},
-        {"key":11, "name":"埼玉県"},
-        {"key":12, "name":"千葉県"},
-        {"key":13, "name":"東京都"},
-        {"key":14, "name":"神奈川県"},
-        {"key":15, "name":"新潟県"},
-        {"key":16, "name":"富山県"},
-        {"key":17, "name":"石川県"},
-        {"key":18, "name":"福井県"},
-        {"key":19, "name":"山梨県"},
-        {"key":20, "name":"長野県"},
-        {"key":21, "name":"岐阜県"},
-        {"key":22, "name":"静岡県"},
-        {"key":23, "name":"愛知県"},
-        {"key":24, "name":"三重県"},
-        {"key":25, "name":"滋賀県"},
-        {"key":26, "name":"京都府"},
-        {"key":27, "name":"大阪府"},
-        {"key":28, "name":"兵庫県"},
-        {"key":29, "name":"奈良県"},
-        {"key":30, "name":"和歌山県"},
-        {"key":31, "name":"鳥取県"},
-        {"key":32, "name":"島根県"},
-        {"key":33, "name":"岡山県"},
-        {"key":34, "name":"広島県"},
-        {"key":35, "name":"山口県"},
-        {"key":36, "name":"徳島県"},
-        {"key":37, "name":"香川県"},
-        {"key":38, "name":"愛媛県"},
-        {"key":39, "name":"高知県"},
-        {"key":40, "name":"福岡県"},
-        {"key":41, "name":"佐賀県"},
-        {"key":42, "name":"長崎県"},
-        {"key":43, "name":"熊本県"},
-        {"key":44, "name":"大分県"},
-        {"key":45, "name":"宮崎県"},
-        {"key":46, "name":"鹿児島県"},
-        {"key":47, "name":"沖縄県"},
-        {"key":48, "name":"海外"},
+        {"key": 1, "name": "北海道"},
+        {"key": 2, "name": "青森県"},
+        {"key": 3, "name": "岩手県"},
+        {"key": 4, "name": "宮城県"},
+        {"key": 5, "name": "秋田県"},
+        {"key": 6, "name": "山形県"},
+        {"key": 7, "name": "福島県"},
+        {"key": 8, "name": "茨城県"},
+        {"key": 9, "name": "栃木県"},
+        {"key": 10, "name": "群馬県"},
+        {"key": 11, "name": "埼玉県"},
+        {"key": 12, "name": "千葉県"},
+        {"key": 13, "name": "東京都"},
+        {"key": 14, "name": "神奈川県"},
+        {"key": 15, "name": "新潟県"},
+        {"key": 16, "name": "富山県"},
+        {"key": 17, "name": "石川県"},
+        {"key": 18, "name": "福井県"},
+        {"key": 19, "name": "山梨県"},
+        {"key": 20, "name": "長野県"},
+        {"key": 21, "name": "岐阜県"},
+        {"key": 22, "name": "静岡県"},
+        {"key": 23, "name": "愛知県"},
+        {"key": 24, "name": "三重県"},
+        {"key": 25, "name": "滋賀県"},
+        {"key": 26, "name": "京都府"},
+        {"key": 27, "name": "大阪府"},
+        {"key": 28, "name": "兵庫県"},
+        {"key": 29, "name": "奈良県"},
+        {"key": 30, "name": "和歌山県"},
+        {"key": 31, "name": "鳥取県"},
+        {"key": 32, "name": "島根県"},
+        {"key": 33, "name": "岡山県"},
+        {"key": 34, "name": "広島県"},
+        {"key": 35, "name": "山口県"},
+        {"key": 36, "name": "徳島県"},
+        {"key": 37, "name": "香川県"},
+        {"key": 38, "name": "愛媛県"},
+        {"key": 39, "name": "高知県"},
+        {"key": 40, "name": "福岡県"},
+        {"key": 41, "name": "佐賀県"},
+        {"key": 42, "name": "長崎県"},
+        {"key": 43, "name": "熊本県"},
+        {"key": 44, "name": "大分県"},
+        {"key": 45, "name": "宮崎県"},
+        {"key": 46, "name": "鹿児島県"},
+        {"key": 47, "name": "沖縄県"},
+        {"key": 48, "name": "海外"},
     ]
     session.bulk_insert_mappings(PlaceOfResidence, place_of_residences)
     session.commit()
+
+    # 学部のマスタデータを追加
+    majors = [
+        {"key":1, "name":"人文科学"},
+        {"key":2, "name":"社会科学"},
+        {"key":3, "name":"自然科学"},
+        {"key":4, "name":"医学、薬学"},
+        {"key":5, "name":"建築"},
+        {"key":6, "name":"芸術"},
+        {"key":7, "name":"福祉"},
+        {"key":8, "name":"その他"},
+    ]
+    session.bulk_insert_mappings(Major, majors)
+    session.commit()
+
+
+
 
 if __name__ == "__main__":
     main(sys.argv)
