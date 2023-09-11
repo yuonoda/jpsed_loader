@@ -5,6 +5,13 @@ from sqlalchemy.orm import relationship
 
 from setting import Base, Engine, session
 
+class Survey(Base):
+    __tablename__ = 'surveys_dim'
+    __table_args__ = {
+        'comment': '調査の次元テーブル'
+    }
+    survey_number = Column('survey_number', Integer, primary_key=True)
+    year = Column('year', Integer)
 
 class Answer(Base):
     __tablename__ = 'answers_fact'
@@ -73,6 +80,19 @@ def main(args):
     メイン関数
     """
     Base.metadata.create_all(bind=Engine)
+
+    # 調査マスタを追加
+    surveys = [
+        {"survey_number": 1523, "year": 2022},
+        {"survey_number": 1429, "year": 2021},
+        {"survey_number": 1349, "year": 2020},
+        {"survey_number": 1279, "year": 2019},
+        {"survey_number": 1227, "year": 2018},
+        {"survey_number": 1164, "year": 2017},
+        {"survey_number": 1088, "year": 2016},
+    ]
+    session.bulk_insert_mappings(Survey, surveys)
+    session.commit()
 
     # 職種マスタを追加
     occupations =[

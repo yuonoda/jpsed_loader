@@ -72,7 +72,8 @@ class Loader:
                     data = []
                 i += 1
 
-            print(i)
+            # 調査番号とロード件数を出力
+            print("survey_number: " + str(survey_number) + ", count: " + str(i))
 
 
 loader = Loader()
