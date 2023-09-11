@@ -15,6 +15,7 @@ class Loader:
             "occupation": "y21_q32",
             "degree": "y21_q6",
             "self_learning": "y21_q69",
+            "place_of_residence": "y21_q4",
         },
         1523: {
             "age": "y22_q2",
@@ -24,6 +25,7 @@ class Loader:
             "occupation": "y22_q32",
             "degree": "y22_q6",
             "self_learning": "y22_q67",
+            "place_of_residence": "y22_q4",
         },
     }
 
@@ -62,7 +64,8 @@ class Loader:
                     "main_job_income": row[key_dict["main_job_income"]] if row[key_dict['main_job_income']] != '' else 0,
                     "occupation": row[key_dict['occupation']] if row[key_dict['occupation']] != '' else None,
                     "degree": row[key_dict['degree']] if row[key_dict['degree']] != '' else None,
-                    "self_learning": row[key_dict['self_learning']] == '1'
+                    "self_learning": row[key_dict['self_learning']] == '1',
+                    "place_of_residence": row[key_dict['place_of_residence']],
                 })
 
                 # 1000件ごとにバルクインサート
