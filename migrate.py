@@ -1,27 +1,20 @@
 import sys
-from sqlalchemy import Column, Integer, BigInteger, ForeignKey, String, Boolean
+from sqlalchemy import Column, Integer, BigInteger, ForeignKey, String, Boolean, UniqueConstraint
 from sqlalchemy.dialects.postgresql import INT4RANGE
 from sqlalchemy.orm import relationship
 
 from setting import Base, Engine, session
 
-
-class Survey(Base):
-    __tablename__ = 'surveys_dim'
-    __table_args__ = {
-        'comment': '調査の次元テーブル'
-    }
-    survey_number = Column('survey_number', Integer, primary_key=True)
-    year = Column('year', Integer)
-
-
 class Answer(Base):
     __tablename__ = 'answers_fact'
-    __table_args__ = {
-        'comment': '回答のファクトテーブル'
-    }
-    survey_number = Column('survey_number', Integer, primary_key=True)
-    answer_key = Column('answer_key', Integer, primary_key=True, )
+    __table_args__ = (
+        (UniqueConstraint('survey_number', 'answer_key', name='survey_number_answer_key_uk')),
+        {'comment': '回答のファクトテーブル'},
+    )
+    answer_id = Column('answer_id', BigInteger, primary_key=True, autoincrement=True)
+    survey_number = Column('survey_number', Integer,
+                           ForeignKey('surveys_dim.survey_number', onupdate='CASCADE', ondelete='CASCADE'))
+    answer_key = Column('answer_key', Integer)
 
     user_ID = Column('user_id', BigInteger)
     age = Column('age', Integer)
@@ -41,7 +34,15 @@ class Answer(Base):
     has_children = Column('has_children', Boolean, comment='子供の有無')
     children_count = Column('children_count', Integer, comment='子ども人数【ベース：子どもあり】')
     major = Column('major', Integer,
-                        ForeignKey('majors_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
+                   ForeignKey('majors_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
+
+class Survey(Base):
+    __tablename__ = 'surveys_dim'
+    __table_args__ = {
+        'comment': '調査の次元テーブル'
+    }
+    survey_number = Column('survey_number', Integer, primary_key=True)
+    year = Column('year', Integer)
 
 
 class Occupation(Base):
@@ -458,19 +459,20 @@ def main(args):
 
     # 学部のマスタデータを追加
     majors = [
-        {"key":1, "name":"人文科学"},
-        {"key":2, "name":"社会科学"},
-        {"key":3, "name":"自然科学"},
-        {"key":4, "name":"医学、薬学"},
-        {"key":5, "name":"建築"},
-        {"key":6, "name":"芸術"},
-        {"key":7, "name":"福祉"},
-        {"key":8, "name":"その他"},
+        {"key": 1, "name": "人文科学"},
+        {"key": 2, "name": "社会科学"},
+        {"key": 3, "name": "自然科学"},
+        {"key": 4, "name": "医学、薬学"},
+        {"key": 5, "name": "建築"},
+        {"key": 6, "name": "芸術"},
+        {"key": 7, "name": "福祉"},
+        {"key": 8, "name": "その他"},
     ]
     session.bulk_insert_mappings(Major, majors)
     session.commit()
 
-
+    # (\d+)\s(.+)
+    # {"key":$1, "name":"$2"},
 
 
 if __name__ == "__main__":
