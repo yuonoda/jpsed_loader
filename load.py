@@ -12,6 +12,7 @@ class Loader:
             "gender": "y21_q1",
             "educational_attainment": "y21_q5",
             "main_job_income": "y21_q100_1",
+            "industry": "y21_q30",
             "occupation": "y21_q32",
             "degree": "y21_q6",
             "self_learning": "y21_q69",
@@ -29,6 +30,7 @@ class Loader:
             "gender": "y22_q1",
             "educational_attainment": "y22_q5",
             "main_job_income": "y22_q100_1",
+            "industry": "y22_q30",
             "occupation": "y22_q32",
             "degree": "y22_q6",
             "self_learning": "y22_q67",
@@ -39,7 +41,7 @@ class Loader:
             "major": "y22_q6",
             "working_situation": "y22_q17",
             "working_status": "y22_q18",
-            "employment_status": "y22_q19"
+            "employment_status": "y22_q19",
         },
     }
 
@@ -76,6 +78,7 @@ class Loader:
                     "gender": row[key_dict['gender']],
                     "educational_attainment": row[key_dict['educational_attainment']],
                     "main_job_income": row[key_dict["main_job_income"]] if row[key_dict['main_job_income']] != '' else 0,
+                    "industry": row[key_dict['industry']] if row[key_dict['industry']] != '' else None,
                     "occupation": row[key_dict['occupation']] if row[key_dict['occupation']] != '' else None,
                     "degree": row[key_dict['degree']] if row[key_dict['degree']] != '' else None,
                     "self_learning": row[key_dict['self_learning']] == '1',
