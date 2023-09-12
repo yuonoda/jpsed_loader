@@ -25,6 +25,7 @@ class Loader:
             "working_situation": "y21_q17",
             "working_status":"y21_q18",
             "employment_status": "y21_q19",
+            "leaving_count": "y21_q55"
         },
         1523: {
             "age": "y22_q2",
@@ -44,6 +45,7 @@ class Loader:
             "working_situation": "y22_q17",
             "working_status": "y22_q18",
             "employment_status": "y22_q19",
+            "leaving_count": "y22_q53"
         },
     }
 
@@ -93,6 +95,7 @@ class Loader:
                     "working_situation": row[key_dict['working_situation']] if row[key_dict['working_situation']] != '' else None,
                     "working_status": row[key_dict['working_status']] if row[key_dict['working_status']] != '' else None,
                     "employment_status": row[key_dict['employment_status']] if row[key_dict['employment_status']] != '' else None,
+                    "leaving_count": row[key_dict['leaving_count']] if row[key_dict['leaving_count']] != '' else None,
                 })
 
                 # 1000件ごとにバルクインサート

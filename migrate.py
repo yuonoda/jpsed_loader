@@ -16,6 +16,7 @@ class Answer(Base):
                            ForeignKey('surveys_dim.survey_number', onupdate='CASCADE', ondelete='CASCADE'))
     answer_key = Column('answer_key', Integer)
 
+    # 基本属性
     user_ID = Column('user_id', BigInteger)
     age = Column('age', Integer)
     gender = Column('gender', Integer)
@@ -50,7 +51,7 @@ class Answer(Base):
                             ForeignKey('working_statuses_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
     employment_status = Column('employment_status', Integer,
                            ForeignKey('employment_statuses_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
-
+    leaving_count = Column('leaving_count', Integer, comment='退職回数')
 
 
 class Survey(Base):
@@ -165,6 +166,7 @@ class EmploymentStatus(Base):
     }
     key = Column('key', Integer, primary_key=True, autoincrement=True)
     name = Column('name', String, nullable=False)
+
 
 def main(args):
     """
