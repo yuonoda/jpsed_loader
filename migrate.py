@@ -36,6 +36,15 @@ class Answer(Base):
     major = Column('major', Integer,
                    ForeignKey('majors_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
 
+    working_situation = Column('working_situation', Integer,
+                               ForeignKey('working_situations_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
+    working_status = Column('working_status', Integer,
+                            ForeignKey('working_statuses_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
+    employment_status = Column('employment_status', Integer,
+                           ForeignKey('employment_statuses_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
+
+
+
 class Survey(Base):
     __tablename__ = 'surveys_dim'
     __table_args__ = {
@@ -101,6 +110,33 @@ class Major(Base):
     __tablename__ = 'majors_dim'
     __table_args__ = {
         'comment': '学部の次元テーブル'
+    }
+    key = Column('key', Integer, primary_key=True, autoincrement=True)
+    name = Column('name', String, nullable=False)
+
+
+class WorkingSituation(Base):
+    __tablename__ = 'working_situations_dim'
+    __table_args__ = {
+        'comment': '就業状態の次元テーブル'
+    }
+    key = Column('key', Integer, primary_key=True, autoincrement=True)
+    name = Column('name', String, nullable=False)
+
+
+class WorkingStatus(Base):
+    __tablename__ = 'working_statuses_dim'
+    __table_args__ = {
+        'comment': '就業形態の次元テーブル'
+    }
+    key = Column('key', Integer, primary_key=True, autoincrement=True)
+    name = Column('name', String, nullable=False)
+
+
+class EmploymentStatus(Base):
+    __tablename__ = 'employment_statuses_dim'
+    __table_args__ = {
+        'comment': '雇用形態の次元テーブル'
     }
     key = Column('key', Integer, primary_key=True, autoincrement=True)
     name = Column('name', String, nullable=False)
@@ -469,6 +505,47 @@ def main(args):
         {"key": 8, "name": "その他"},
     ]
     session.bulk_insert_mappings(Major, majors)
+    session.commit()
+
+    # 就業状態のマスタデータを追加
+    working_situations = [
+        {"key":1, "name":"おもに仕事をしていた（原則週5日以上の勤務）"},
+        {"key":2, "name":"おもに仕事をしていた（原則週5日未満の勤務）"},
+        {"key":3, "name":"通学のかたわらに仕事をしていた"},
+        {"key":4, "name":"家事などのかたわらに仕事をしていた"},
+        {"key":5, "name":"仕事を休んでいた（疾病などによる休職）"},
+        {"key":6, "name":"仕事を休んでいた（閑散期で仕事がなかった）"},
+        {"key":7, "name":"仕事を探していた"},
+        {"key":8, "name":"通学をしていた"},
+        {"key":9, "name":"家事・育児をしていた"},
+        {"key":10, "name":"介護をしていた"},
+        {"key":11, "name":"その他"},
+    ]
+    session.bulk_insert_mappings(WorkingSituation, working_situations)
+    session.commit()
+
+    # 就業形態のマスタデータを追加
+    working_status = [
+        {"key":1, "name":"会社・団体等に雇われていた"},
+        {"key":2, "name":"会社などの役員"},
+        {"key":3, "name":"自営業主（雇い人あり）"},
+        {"key":4, "name":"自営業主（雇い人なし）"},
+        {"key":5, "name":"家族従業者（飲食店・卸小売店・農業等の家族従業者"},
+        {"key":6, "name":"内職"},
+    ]
+    session.bulk_insert_mappings(WorkingStatus, working_status)
+    session.commit()
+
+    # 雇用形態のマスタデータを追加
+    employment_statuses = [
+        {"key":1, "name":"正規の職員・従業員"},
+        {"key":2, "name":"パート・アルバイト"},
+        {"key":3, "name":"労働者派遣事業所の派遣社員"},
+        {"key":4, "name":"契約社員"},
+        {"key":5, "name":"嘱託"},
+        {"key":6, "name":"その他"},
+    ]
+    session.bulk_insert_mappings(EmploymentStatus, employment_statuses)
     session.commit()
 
     # (\d+)\s(.+)
