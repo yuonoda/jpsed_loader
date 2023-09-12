@@ -22,11 +22,16 @@ class Answer(Base):
     educational_attainment = Column('educational_attainment', Integer,
                                     ForeignKey('educational_attainments_dim.key', onupdate='CASCADE',
                                                ondelete='CASCADE'))
+
+    # 職業
     main_job_income = Column('main_job_income', Integer)
     occupation = Column('occupation', Integer,
                         ForeignKey('occupations_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
+    company_size = Column('company_size', Integer,
+                          ForeignKey('company_sizes_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
     industry = Column('industry', Integer,
                         ForeignKey('industries_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
+
 
     degree = Column('degree', Integer,
                     ForeignKey('degrees_dim.key', onupdate='CASCADE', ondelete='CASCADE'))
@@ -55,6 +60,23 @@ class Survey(Base):
     }
     survey_number = Column('survey_number', Integer, primary_key=True)
     year = Column('year', Integer)
+
+
+class Industry(Base):
+    __tablename__ = 'industries_dim'
+    __table_args__ = {
+        'comment': '業種の次元テーブル'
+    }
+    key = Column('key', Integer, primary_key=True, autoincrement=True)
+    name = Column('name', String, nullable=False)
+
+class CompanySize(Base):
+    __tablename__ = 'company_sizes_dim'
+    __table_args__ = {
+        'comment': '従業員規模の次元テーブル'
+    }
+    key = Column('key', Integer, primary_key=True, autoincrement=True)
+    name = Column('name', String, nullable=False)
 
 
 class Occupation(Base):
@@ -144,15 +166,6 @@ class EmploymentStatus(Base):
     key = Column('key', Integer, primary_key=True, autoincrement=True)
     name = Column('name', String, nullable=False)
 
-
-class Industry(Base):
-    __tablename__ = 'industries_dim'
-    __table_args__ = {
-        'comment': '業種の次元テーブル'
-    }
-    key = Column('key', Integer, primary_key=True, autoincrement=True)
-    name = Column('name', String, nullable=False)
-
 def main(args):
     """
     メイン関数
@@ -170,6 +183,98 @@ def main(args):
         {"survey_number": 1088, "year": 2016},
     ]
     session.bulk_insert_mappings(Survey, surveys)
+    session.commit()
+
+    # 業種のマスタデータを追加
+    industries = [
+        {"key":1, "name":"農林漁業"},
+        {"key":2, "name":"鉱業"},
+        {"key":3, "name":"総合工事業"},
+        {"key":4, "name":"識別工事業（大工、とび、左官、石工など）"},
+        {"key":5, "name":"設備工事業"},
+        {"key":6, "name":"食料品製造業"},
+        {"key":7, "name":"繊維工業、衣服・繊維製品製造業"},
+        {"key":8, "name":"木材・木製品、家具、紙・パルプ"},
+        {"key":9, "name":"印刷・同関連業"},
+        {"key":10, "name":"化学工業、石油・石炭製品、プラスチック製品製造業"},
+        {"key":11, "name":"ゴム、革、窯業・土石製品製造業"},
+        {"key":12, "name":"鉄鋼業"},
+        {"key":13, "name":"非鉄金属製造業"},
+        {"key":14, "name":"金属製品製造業"},
+        {"key":15, "name":"一般機械器具製造業"},
+        {"key":16, "name":"総合電機"},
+        {"key":17, "name":"重電・産業用電気機器"},
+        {"key":18, "name":"コンピュータ・通信機器・OA機器関連"},
+        {"key":19, "name":"家電・AV機器"},
+        {"key":20, "name":"ゲーム・アミューズメント機器"},
+        {"key":21, "name":"半導体・電子・電気部品"},
+        {"key":22, "name":"その他の電気機械器具製造業"},
+        {"key":23, "name":"自動車・鉄道・航空機等製造、同部品製造"},
+        {"key":24, "name":"精密機械器具製造業"},
+        {"key":25, "name":"その他の製造業"},
+        {"key":26, "name":"電気・ガス・熱供給・水道業"},
+        {"key":27, "name":"放送業"},
+        {"key":28, "name":"通信業（電気通信業、信書送達業など）"},
+        {"key":29, "name":"情報サービス・調査業"},
+        {"key":30, "name":"インターネット付随サービス業"},
+        {"key":31, "name":"映像・音声・文字情報制作業"},
+        {"key":32, "name":"鉄道、道路旅客運送業"},
+        {"key":33, "name":"道路貨物運送業"},
+        {"key":34, "name":"倉庫業"},
+        {"key":35, "name":"旅行業および運輸に付帯するサービス業"},
+        {"key":36, "name":"その他の運輸業"},
+        {"key":37, "name":"卸売業"},
+        {"key":38, "name":"百貨店、ディスカウントストア"},
+        {"key":39, "name":"織物・衣服・身の回り品小売業"},
+        {"key":40, "name":"スーパー・ストア"},
+        {"key":41, "name":"コンビニエンスストア"},
+        {"key":42, "name":"その他の飲食料品小売業"},
+        {"key":43, "name":"その他の小売業"},
+        {"key":44, "name":"銀行・信託業"},
+        {"key":45, "name":"信金、信用組合業"},
+        {"key":46, "name":"貸金業、投資業等非預金信用機関"},
+        {"key":47, "name":"証券業、商品先物取引業"},
+        {"key":48, "name":"保険業"},
+        {"key":49, "name":"その他金融"},
+        {"key":50, "name":"不動産業"},
+        {"key":51, "name":"飲食店"},
+        {"key":52, "name":"旅館、ホテル、レジャー"},
+        {"key":53, "name":"医療業（病院、歯科診療所など）"},
+        {"key":54, "name":"社会保険、社会福祉（保育所、託児所、訪問介護など）"},
+        {"key":55, "name":"教育（小・中・高等学校、短大、大学専修学校など）"},
+        {"key":56, "name":"郵便局（郵便事業のみ）"},
+        {"key":57, "name":"理美容、エステ、クリーニング、浴場"},
+        {"key":58, "name":"駐車場業"},
+        {"key":59, "name":"その他の生活関連サービス業"},
+        {"key":60, "name":"自動車整備業"},
+        {"key":61, "name":"物品賃貸業"},
+        {"key":62, "name":"広告代理業"},
+        {"key":63, "name":"専門サービス業"},
+        {"key":64, "name":"その他の事業サービス業"},
+        {"key":65, "name":"その他のサービス業"},
+        {"key":66, "name":"公務"},
+        {"key":67, "name":"他に分類されないもの"},
+    ]
+    session.bulk_insert_mappings(Industry, industries)
+    session.commit()
+
+    # 従業員規模のマスタデータを追加
+    company_sizes = [
+        {"key":1, "name":"4人以下"},
+        {"key":2, "name":"5～9人"},
+        {"key":3, "name":"10～19人"},
+        {"key":4, "name":"20～29人"},
+        {"key":5, "name":"30～49人"},
+        {"key":6, "name":"50～99人"},
+        {"key":7, "name":"100～299人"},
+        {"key":8, "name":"300～499人"},
+        {"key":9, "name":"500～999人"},
+        {"key":10, "name":"1000～1999人"},
+        {"key":11, "name":"2000～4999人"},
+        {"key":12, "name":"5000人以上"},
+        {"key":13, "name":"公務（官公庁）"}
+    ]
+    session.bulk_insert_mappings(CompanySize, company_sizes)
     session.commit()
 
     # 職種マスタを追加
@@ -559,78 +664,7 @@ def main(args):
     session.bulk_insert_mappings(EmploymentStatus, employment_statuses)
     session.commit()
 
-    # 業種のマスタデータを追加
-    industries = [
-        {"key":1, "name":"農林漁業"},
-        {"key":2, "name":"鉱業"},
-        {"key":3, "name":"総合工事業"},
-        {"key":4, "name":"識別工事業（大工、とび、左官、石工など）"},
-        {"key":5, "name":"設備工事業"},
-        {"key":6, "name":"食料品製造業"},
-        {"key":7, "name":"繊維工業、衣服・繊維製品製造業"},
-        {"key":8, "name":"木材・木製品、家具、紙・パルプ"},
-        {"key":9, "name":"印刷・同関連業"},
-        {"key":10, "name":"化学工業、石油・石炭製品、プラスチック製品製造業"},
-        {"key":11, "name":"ゴム、革、窯業・土石製品製造業"},
-        {"key":12, "name":"鉄鋼業"},
-        {"key":13, "name":"非鉄金属製造業"},
-        {"key":14, "name":"金属製品製造業"},
-        {"key":15, "name":"一般機械器具製造業"},
-        {"key":16, "name":"総合電機"},
-        {"key":17, "name":"重電・産業用電気機器"},
-        {"key":18, "name":"コンピュータ・通信機器・OA機器関連"},
-        {"key":19, "name":"家電・AV機器"},
-        {"key":20, "name":"ゲーム・アミューズメント機器"},
-        {"key":21, "name":"半導体・電子・電気部品"},
-        {"key":22, "name":"その他の電気機械器具製造業"},
-        {"key":23, "name":"自動車・鉄道・航空機等製造、同部品製造"},
-        {"key":24, "name":"精密機械器具製造業"},
-        {"key":25, "name":"その他の製造業"},
-        {"key":26, "name":"電気・ガス・熱供給・水道業"},
-        {"key":27, "name":"放送業"},
-        {"key":28, "name":"通信業（電気通信業、信書送達業など）"},
-        {"key":29, "name":"情報サービス・調査業"},
-        {"key":30, "name":"インターネット付随サービス業"},
-        {"key":31, "name":"映像・音声・文字情報制作業"},
-        {"key":32, "name":"鉄道、道路旅客運送業"},
-        {"key":33, "name":"道路貨物運送業"},
-        {"key":34, "name":"倉庫業"},
-        {"key":35, "name":"旅行業および運輸に付帯するサービス業"},
-        {"key":36, "name":"その他の運輸業"},
-        {"key":37, "name":"卸売業"},
-        {"key":38, "name":"百貨店、ディスカウントストア"},
-        {"key":39, "name":"織物・衣服・身の回り品小売業"},
-        {"key":40, "name":"スーパー・ストア"},
-        {"key":41, "name":"コンビニエンスストア"},
-        {"key":42, "name":"その他の飲食料品小売業"},
-        {"key":43, "name":"その他の小売業"},
-        {"key":44, "name":"銀行・信託業"},
-        {"key":45, "name":"信金、信用組合業"},
-        {"key":46, "name":"貸金業、投資業等非預金信用機関"},
-        {"key":47, "name":"証券業、商品先物取引業"},
-        {"key":48, "name":"保険業"},
-        {"key":49, "name":"その他金融"},
-        {"key":50, "name":"不動産業"},
-        {"key":51, "name":"飲食店"},
-        {"key":52, "name":"旅館、ホテル、レジャー"},
-        {"key":53, "name":"医療業（病院、歯科診療所など）"},
-        {"key":54, "name":"社会保険、社会福祉（保育所、託児所、訪問介護など）"},
-        {"key":55, "name":"教育（小・中・高等学校、短大、大学専修学校など）"},
-        {"key":56, "name":"郵便局（郵便事業のみ）"},
-        {"key":57, "name":"理美容、エステ、クリーニング、浴場"},
-        {"key":58, "name":"駐車場業"},
-        {"key":59, "name":"その他の生活関連サービス業"},
-        {"key":60, "name":"自動車整備業"},
-        {"key":61, "name":"物品賃貸業"},
-        {"key":62, "name":"広告代理業"},
-        {"key":63, "name":"専門サービス業"},
-        {"key":64, "name":"その他の事業サービス業"},
-        {"key":65, "name":"その他のサービス業"},
-        {"key":66, "name":"公務"},
-        {"key":67, "name":"他に分類されないもの"},
-    ]
-    session.bulk_insert_mappings(Industry, industries)
-    session.commit()
+
 
     # (\d+)\s(.+)
     # {"key":$1, "name":"$2"},
